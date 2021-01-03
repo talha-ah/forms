@@ -3,27 +3,11 @@ import Grid from "@material-ui/core/Grid";
 import { useDispatch, useSelector } from "react-redux";
 import { TextField } from "formik-material-ui";
 import { Button, Typography, MenuItem } from "@material-ui/core";
-import { Formik, Form, Field, FieldArray } from "formik";
+import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
 import * as Yup from "yup";
 
 import Heading from "../components/Heading";
 import * as actionTypes from "../store/actions/actionTypes";
-
-const validationSchema = Yup.object({
-  subgroup1: Yup.array().of(
-    Yup.object().shape({
-      name: Yup.string(),
-      description: Yup.string(),
-      features: Yup.array().of(Yup.string().required()).required(),
-    }),
-  ),
-  subgroup2: Yup.array().of(
-    Yup.object().shape({
-      quantity: Yup.number(),
-      price: Yup.number(),
-    }),
-  ),
-});
 
 const nationality = [
   "Afghanistan",
@@ -56,13 +40,29 @@ export default function Form3(props) {
       <Heading text="Product Options" />
       <Formik
         initialValues={store.form3}
-        // validationSchema={validationSchema}
+        validationSchema={Yup.object({
+          subgroup1: Yup.array().of(
+            Yup.object().shape({
+              name: Yup.string().required("Name required"),
+              description: Yup.string().required("Description required"),
+              features: Yup.array()
+                .of(Yup.string().required())
+                .min(1, "At least one is required!")
+                .required(),
+            }),
+          ),
+          subgroup2: Yup.array().of(
+            Yup.object().shape({
+              quantity: Yup.number().required("Quantity required"),
+              price: Yup.number().required("Price required"),
+            }),
+          ),
+        })}
         onSubmit={(values, { setSubmitting }) => {
           canLeave = true;
           dispatch({ type: actionTypes.SET_FORM_3, data: values });
           setTimeout(() => {
             setSubmitting(false);
-
             dispatch({ type: actionTypes.SET_PAGE, data: store.page + 1 });
           }, 500);
         }}
@@ -87,6 +87,12 @@ export default function Form3(props) {
                                 label="Product Name"
                               />
                             </Grid>
+                            {/* <Grid item xs={12}>
+                              <ErrorMessage
+                                name={`subgroup1.${index}.name`}
+                                style={{ color: "red" }}
+                              />
+                            </Grid> */}
                             <Grid item xs={12}>
                               <Field
                                 fullWidth
@@ -96,6 +102,12 @@ export default function Form3(props) {
                                 label="Product Description"
                               />
                             </Grid>
+                            {/* <Grid item xs={12}>
+                              <ErrorMessage
+                                name={`subgroup1.${index}.description`}
+                                style={{ color: "red" }}
+                              />
+                            </Grid> */}
                             <Grid item xs={12}>
                               <Field
                                 select
@@ -117,6 +129,12 @@ export default function Form3(props) {
                                 ))}
                               </Field>
                             </Grid>
+                            {/* <Grid item xs={12}>
+                              <ErrorMessage
+                                name={`subgroup1.${index}.features`}
+                                style={{ color: "red" }}
+                              />
+                            </Grid> */}
                             <Grid item xs={12}>
                               <Button
                                 type="button"
@@ -161,6 +179,12 @@ export default function Form3(props) {
                                 label="Product Quantity"
                               />
                             </Grid>
+                            {/* <Grid item xs={12}>
+                              <ErrorMessage
+                                name={`subgroup2.${index}.quantity`}
+                                style={{ color: "red" }}
+                              />
+                            </Grid> */}
                             <Grid item xs={12}>
                               <Field
                                 fullWidth
@@ -170,6 +194,12 @@ export default function Form3(props) {
                                 label="Product Price"
                               />
                             </Grid>
+                            {/* <Grid item xs={12}>
+                              <ErrorMessage
+                                name={`subgroup2.${index}.price`}
+                                style={{ color: "red" }}
+                              />
+                            </Grid> */}
                             <Grid item xs={12}>
                               <Button
                                 type="button"

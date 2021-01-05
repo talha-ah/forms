@@ -51,7 +51,7 @@ export default function Form1(props) {
         }}
       >
         {({ submitForm, isSubmitting, values, setFieldValue }) => (
-          <Form>
+          <Form style={{ maxWidth: 600 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <DropzoneArea

@@ -58,71 +58,76 @@ export default function Form1(props) {
   return (
     <>
       <Heading text="Product Availability" />
-      <Grid container spacing={2}>
-        <Grid item xs={12}>
-          <Calendar
-            minDate={new Date()}
-            enableRangeSelection={true}
-            enableContextMenu={true}
-            contextMenuItems={[
-              {
-                text: "Update",
-                click: (evt) => setCurrentEvent(evt),
-              },
-              {
-                text: "Delete",
-                click: (evt) =>
+      <div style={{ maxWidth: 600 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12}>
+            <Calendar
+              minDate={new Date()}
+              enableRangeSelection={true}
+              enableContextMenu={true}
+              contextMenuItems={[
+                {
+                  text: "Update",
+                  click: (evt) => setCurrentEvent(evt),
+                },
+                {
+                  text: "Delete",
+                  click: (evt) =>
+                    dispatch({
+                      type: actionTypes.SET_FORM_5,
+                      data: {
+                        dates: store.form5.dates.filter(
+                          (item) => item.id !== evt.id,
+                        ),
+                      },
+                    }),
+                },
+              ]}
+              onRangeSelected={(e) =>
+                setCurrentEvent({
+                  startDate: e.startDate,
+                  endDate: e.endDate,
+                })
+              }
+              dataSource={store.form5.dates}
+            />
+          </Grid>
+          <Grid item xs={12} container spacing={2}>
+            <Grid item xs={6}>
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  canLeave = true;
                   dispatch({
-                    type: actionTypes.SET_FORM_5,
-                    data: {
-                      dates: store.form5.dates.filter(
-                        (item) => item.id !== evt.id,
-                      ),
-                    },
-                  }),
-              },
-            ]}
-            onRangeSelected={(e) =>
-              setCurrentEvent({
-                startDate: e.startDate,
-                endDate: e.endDate,
-              })
-            }
-            dataSource={store.form5.dates}
-          />
-        </Grid>
-        <Grid item xs={12} container spacing={2}>
-          <Grid item xs={6}>
-            <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                canLeave = true;
-                dispatch({
-                  type: actionTypes.SET_PAGE,
-                  data: store.page - 1,
-                });
-              }}
-            >
-              Back
-            </Button>
-          </Grid>
-          <Grid item xs={6}>
-            <Button
-              fullWidth
-              variant="contained"
-              color="primary"
-              onClick={() => {
-                canLeave = true;
-                dispatch({ type: actionTypes.SET_PAGE, data: store.page + 1 });
-              }}
-            >
-              Next
-            </Button>
+                    type: actionTypes.SET_PAGE,
+                    data: store.page - 1,
+                  });
+                }}
+              >
+                Back
+              </Button>
+            </Grid>
+            <Grid item xs={6}>
+              <Button
+                fullWidth
+                variant="contained"
+                color="primary"
+                onClick={() => {
+                  canLeave = true;
+                  dispatch({
+                    type: actionTypes.SET_PAGE,
+                    data: store.page + 1,
+                  });
+                }}
+              >
+                Next
+              </Button>
+            </Grid>
           </Grid>
         </Grid>
-      </Grid>
+      </div>
       <Dialog
         open={currentEvent ? true : false}
         onClose={() => currentEvent(null)}

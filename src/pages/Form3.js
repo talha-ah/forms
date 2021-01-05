@@ -3,11 +3,31 @@ import Grid from "@material-ui/core/Grid";
 import { useDispatch, useSelector } from "react-redux";
 import { TextField } from "formik-material-ui";
 import { Button, Typography, MenuItem } from "@material-ui/core";
-import { ErrorMessage, Field, FieldArray, Form, Formik } from "formik";
+import { Field, FieldArray, Form, Formik } from "formik";
 import * as Yup from "yup";
+import Chip from "@material-ui/core/Chip";
+import { makeStyles } from "@material-ui/core/styles";
 
 import Heading from "../components/Heading";
 import * as actionTypes from "../store/actions/actionTypes";
+
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    margin: theme.spacing(1),
+    minWidth: 120,
+    maxWidth: 300,
+  },
+  chips: {
+    display: "flex",
+    flexWrap: "wrap",
+  },
+  chip: {
+    margin: 2,
+  },
+  noLabel: {
+    marginTop: theme.spacing(3),
+  },
+}));
 
 const nationality = [
   "Afghanistan",
@@ -18,6 +38,7 @@ const nationality = [
 ];
 let canLeave = false;
 export default function Form3(props) {
+  const classes = useStyles();
   const dispatch = useDispatch();
   const store = useSelector((state) => state);
 
@@ -68,7 +89,7 @@ export default function Form3(props) {
         }}
       >
         {({ submitForm, isSubmitting, values }) => (
-          <Form>
+          <Form style={{ maxWidth: 600 }}>
             <Grid container spacing={2}>
               <Grid item xs={12} container spacing={2}>
                 <Typography variant="h5">Sub Group 1</Typography>
@@ -120,6 +141,17 @@ export default function Form3(props) {
                                 SelectProps={{
                                   multiple: true,
                                   defaultValue: [],
+                                  renderValue: (selected) => (
+                                    <div className={classes.chips}>
+                                      {selected.map((value) => (
+                                        <Chip
+                                          key={value}
+                                          label={value}
+                                          className={classes.chip}
+                                        />
+                                      ))}
+                                    </div>
+                                  ),
                                 }}
                               >
                                 {nationality.map((option) => (

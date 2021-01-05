@@ -73,7 +73,7 @@ export default function Form1(props) {
         }}
       >
         {({ submitForm, isSubmitting, values }) => (
-          <Form>
+          <Form style={{ maxWidth: 600 }}>
             <Grid container spacing={2}>
               <Grid item xs={12}>
                 <Field
@@ -82,6 +82,9 @@ export default function Form1(props) {
                   name="productName"
                   type="text"
                   label="Product Name"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -91,6 +94,9 @@ export default function Form1(props) {
                   name="productLabel"
                   type="text"
                   label="Product Label"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                 />
               </Grid>
               <Grid item xs={12}>
@@ -103,8 +109,11 @@ export default function Form1(props) {
                   name="productCategory"
                   label="Select product Category"
                   helperText="Please prouduct category"
+                  InputLabelProps={{
+                    shrink: true,
+                  }}
                 >
-                  {["weight", "quantity"].map((option) => (
+                  {["weight", "quantity", "capacity"].map((option) => (
                     <MenuItem key={option} value={option}>
                       {option}
                     </MenuItem>
@@ -131,6 +140,9 @@ export default function Form1(props) {
                       name="address"
                       type="text"
                       label="Address"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -140,6 +152,9 @@ export default function Form1(props) {
                       name="city"
                       type="text"
                       label="City"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -149,6 +164,9 @@ export default function Form1(props) {
                       name="state"
                       type="text"
                       label="State"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -158,6 +176,9 @@ export default function Form1(props) {
                       name="zip"
                       type="text"
                       label="Zip"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
                     />
                   </Grid>
                   <Grid item xs={12}>
@@ -167,6 +188,9 @@ export default function Form1(props) {
                       name="country"
                       type="text"
                       label="Country"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
                     />
                   </Grid>
                 </>

@@ -49,8 +49,8 @@ export default function Form3(props) {
         var confirmationMessage =
           "There are unsaved changes left. Are you sure to leave?";
 
-        (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-        return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+        (e || window.event).returnValue = confirmationMessage;
+        return confirmationMessage;
       }
     });
     // eslint-disable-next-line
@@ -59,240 +59,326 @@ export default function Form3(props) {
   return (
     <>
       <Heading text="Product Options" />
-      <Formik
-        initialValues={store.form3}
-        validationSchema={Yup.object({
-          subgroup1: Yup.array().of(
-            Yup.object().shape({
-              name: Yup.string().required("Name required"),
-              description: Yup.string().required("Description required"),
-              features: Yup.array()
-                .of(Yup.string().required())
-                .min(1, "At least one is required!")
-                .required(),
-            }),
-          ),
-          subgroup2: Yup.array().of(
-            Yup.object().shape({
-              quantity: Yup.number().required("Quantity required"),
-              price: Yup.number().required("Price required"),
-            }),
-          ),
-        })}
-        onSubmit={(values, { setSubmitting }) => {
-          canLeave = true;
-          dispatch({ type: actionTypes.SET_FORM_3, data: values });
-          setTimeout(() => {
-            setSubmitting(false);
-            dispatch({ type: actionTypes.SET_PAGE, data: store.page + 1 });
-          }, 500);
-        }}
-      >
-        {({ submitForm, isSubmitting, values }) => (
-          <Form style={{ maxWidth: 600 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12} container spacing={2}>
-                <Typography variant="h5">Sub Group 1</Typography>
-                <FieldArray name="subgroup1">
-                  {({ insert, remove, push }) => (
-                    <React.Fragment>
-                      {values.subgroup1.length > 0 &&
-                        values.subgroup1.map((subgroupItem, index) => (
-                          <Grid item xs={12} container spacing={2} key={index}>
-                            <Grid item xs={12}>
-                              <Field
-                                fullWidth
-                                component={TextField}
-                                name={`subgroup1.${index}.name`}
-                                type="text"
-                                label="Product Name"
-                              />
+      <div className="app">
+        <Formik
+          initialValues={store.form3}
+          validationSchema={Yup.object({
+            groups: Yup.array().of(
+              Yup.object().shape({
+                name: Yup.string().required("Name required"),
+                description: Yup.string().required("Description required"),
+                features: Yup.array()
+                  .of(Yup.string().required())
+                  .min(1, "At least one is required!")
+                  .required(),
+                children: Yup.array().of(
+                  Yup.object().shape({
+                    quantity: Yup.number().required("Quantity required"),
+                    price: Yup.number().required("Price required"),
+                  }),
+                ),
+              }),
+            ),
+          })}
+          onSubmit={(values, { setSubmitting }) => {
+            canLeave = true;
+            dispatch({ type: actionTypes.SET_FORM_3, data: values });
+            console.log(values);
+            setTimeout(() => {
+              setSubmitting(false);
+              dispatch({ type: actionTypes.SET_PAGE, data: store.page + 1 });
+            }, 500);
+          }}
+        >
+          {(props) => {
+            const { values, handleSubmit, submitForm, isSubmitting } = props;
+            return (
+              <Form onSubmit={handleSubmit} style={{ maxWidth: 600 }}>
+                <FieldArray
+                  id="groups"
+                  name="groups"
+                  render={(arrayHelpers) => {
+                    const groups = values.groups;
+                    return (
+                      <Grid container spacing={2}>
+                        {groups && groups.length > 0 ? (
+                          groups.map((product, index) => (
+                            <Grid
+                              item
+                              xs={12}
+                              container
+                              spacing={2}
+                              key={index}
+                            >
+                              <Grid item xs={12}>
+                                <Typography variant="h6">
+                                  Product {index + 1}
+                                </Typography>
+                              </Grid>
+                              <Grid item xs={12}>
+                                <Field
+                                  fullWidth
+                                  component={TextField}
+                                  label="Product Name"
+                                  id={`groups.${index}.name`}
+                                  name={`groups.${index}.name`}
+                                  InputLabelProps={{
+                                    shrink: true,
+                                  }}
+                                />
+                              </Grid>
+                              <Grid item xs={12}>
+                                <Field
+                                  fullWidth
+                                  component={TextField}
+                                  label="Product description"
+                                  id={`groups.${index}.description`}
+                                  name={`groups.${index}.description`}
+                                  InputLabelProps={{
+                                    shrink: true,
+                                  }}
+                                />
+                              </Grid>
+                              <Grid item xs={12}>
+                                <Field
+                                  select
+                                  fullWidth
+                                  type="text"
+                                  variant="standard"
+                                  component={TextField}
+                                  id={`groups.${index}.features`}
+                                  name={`groups.${index}.features`}
+                                  label="Product Features"
+                                  InputLabelProps={{
+                                    shrink: true,
+                                  }}
+                                  SelectProps={{
+                                    multiple: true,
+                                    defaultValue: [],
+                                    renderValue: (selected) => (
+                                      <div className={classes.chips}>
+                                        {selected.map((value) => (
+                                          <Chip
+                                            key={value}
+                                            label={value}
+                                            className={classes.chip}
+                                          />
+                                        ))}
+                                      </div>
+                                    ),
+                                  }}
+                                >
+                                  {nationality.map((option) => (
+                                    <MenuItem key={option} value={option}>
+                                      {option}
+                                    </MenuItem>
+                                  ))}
+                                </Field>
+                              </Grid>
+                              <Grid item xs={12} container>
+                                <FieldArray
+                                  id={`groups.${index}.children`}
+                                  name={`groups.${index}.children`}
+                                  render={(arrayHelpers2, insideIndex) => {
+                                    return (
+                                      <Grid item xs={12} key={insideIndex}>
+                                        {groups[index].children &&
+                                        groups[index].children.length > 0 ? (
+                                          <div
+                                            style={{
+                                              marginLeft: 10,
+                                              marginTop: 10,
+                                            }}
+                                          >
+                                            {groups[index].children.map(
+                                              (q, indexxx) => {
+                                                return (
+                                                  <Grid
+                                                    key={indexxx}
+                                                    container
+                                                    spacing={2}
+                                                  >
+                                                    <Grid item xs={12}>
+                                                      <Field
+                                                        fullWidth
+                                                        component={TextField}
+                                                        type="number"
+                                                        id={`groups.${index}.children.${indexxx}.quantity`}
+                                                        name={`groups.${index}.children.${indexxx}.quantity`}
+                                                        label="Product quantity"
+                                                        InputLabelProps={{
+                                                          shrink: true,
+                                                        }}
+                                                      />
+                                                    </Grid>
+                                                    <Grid item xs={12}>
+                                                      <Field
+                                                        fullWidth
+                                                        component={TextField}
+                                                        type="number"
+                                                        id={`groups.${index}.children.${indexxx}.price`}
+                                                        name={`groups.${index}.children.${indexxx}.price`}
+                                                        label="Product price"
+                                                        InputLabelProps={{
+                                                          shrink: true,
+                                                        }}
+                                                      />
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                      <Button
+                                                        fullWidth
+                                                        type="button"
+                                                        variant="contained"
+                                                        color="secondary"
+                                                        onClick={() =>
+                                                          arrayHelpers2.remove(
+                                                            index,
+                                                          )
+                                                        }
+                                                      >
+                                                        - Detail
+                                                      </Button>
+                                                    </Grid>
+                                                    <Grid item xs={6}>
+                                                      <Button
+                                                        fullWidth
+                                                        type="button"
+                                                        variant="contained"
+                                                        color="primary"
+                                                        onClick={() =>
+                                                          arrayHelpers2.push(
+                                                            index,
+                                                            {
+                                                              quantity: "",
+                                                              price: "",
+                                                            },
+                                                          )
+                                                        }
+                                                      >
+                                                        + Detail
+                                                      </Button>
+                                                    </Grid>
+                                                  </Grid>
+                                                );
+                                              },
+                                            )}
+                                          </div>
+                                        ) : (
+                                          <Grid item xs={12}>
+                                            <Button
+                                              fullWidth
+                                              type="button"
+                                              variant="contained"
+                                              color="primary"
+                                              onClick={() =>
+                                                arrayHelpers2.push({
+                                                  name: "",
+                                                  description: "",
+                                                  features: [],
+                                                  children: [],
+                                                })
+                                              }
+                                            >
+                                              Add Product Detail
+                                            </Button>
+                                          </Grid>
+                                        )}
+                                      </Grid>
+                                    );
+                                  }}
+                                />
+                              </Grid>
+                              <Grid item xs={6}>
+                                <Button
+                                  fullWidth
+                                  type="button"
+                                  variant="contained"
+                                  color="secondary"
+                                  onClick={() => arrayHelpers.remove(index)}
+                                >
+                                  - Product
+                                </Button>
+                              </Grid>
+                              <Grid item xs={6}>
+                                <Button
+                                  fullWidth
+                                  type="button"
+                                  variant="contained"
+                                  color="primary"
+                                  onClick={() =>
+                                    arrayHelpers.push({
+                                      name: "",
+                                      description: "",
+                                      features: [],
+                                      children: [],
+                                    })
+                                  }
+                                >
+                                  + Product
+                                </Button>
+                              </Grid>
                             </Grid>
-                            {/* <Grid item xs={12}>
-                              <ErrorMessage
-                                name={`subgroup1.${index}.name`}
-                                style={{ color: "red" }}
-                              />
-                            </Grid> */}
-                            <Grid item xs={12}>
-                              <Field
-                                fullWidth
-                                component={TextField}
-                                name={`subgroup1.${index}.description`}
-                                type="text"
-                                label="Product Description"
-                              />
-                            </Grid>
-                            {/* <Grid item xs={12}>
-                              <ErrorMessage
-                                name={`subgroup1.${index}.description`}
-                                style={{ color: "red" }}
-                              />
-                            </Grid> */}
-                            <Grid item xs={12}>
-                              <Field
-                                select
-                                fullWidth
-                                type="text"
-                                variant="standard"
-                                component={TextField}
-                                name={`subgroup1.${index}.features`}
-                                label="Product Features"
-                                SelectProps={{
-                                  multiple: true,
-                                  defaultValue: [],
-                                  renderValue: (selected) => (
-                                    <div className={classes.chips}>
-                                      {selected.map((value) => (
-                                        <Chip
-                                          key={value}
-                                          label={value}
-                                          className={classes.chip}
-                                        />
-                                      ))}
-                                    </div>
-                                  ),
-                                }}
-                              >
-                                {nationality.map((option) => (
-                                  <MenuItem key={option} value={option}>
-                                    {option}
-                                  </MenuItem>
-                                ))}
-                              </Field>
-                            </Grid>
-                            {/* <Grid item xs={12}>
-                              <ErrorMessage
-                                name={`subgroup1.${index}.features`}
-                                style={{ color: "red" }}
-                              />
-                            </Grid> */}
-                            <Grid item xs={12}>
-                              <Button
-                                type="button"
-                                variant="contained"
-                                color="secondary"
-                                onClick={() => remove(index)}
-                              >
-                                X
-                              </Button>
-                            </Grid>
+                          ))
+                        ) : (
+                          <Grid item xs={12}>
+                            <Button
+                              fullWidth
+                              type="button"
+                              variant="contained"
+                              color="primary"
+                              onClick={() =>
+                                arrayHelpers.push({
+                                  name: "",
+                                  description: "",
+                                  features: [],
+                                  children: [],
+                                })
+                              }
+                            >
+                              Add New Product
+                            </Button>
                           </Grid>
-                        ))}
-                      <Grid item xs={12}>
-                        <Button
-                          type="button"
-                          fullWidth
-                          variant="contained"
-                          color="primary"
-                          onClick={() => push({ name: "", email: "" })}
-                        >
-                          Add Row
-                        </Button>
+                        )}
                       </Grid>
-                    </React.Fragment>
-                  )}
-                </FieldArray>
-              </Grid>
-              <Grid item xs={12} container spacing={2}>
-                <Typography variant="h5">Sub Group 2</Typography>
-                <FieldArray name="subgroup2">
-                  {({ insert, remove, push }) => (
-                    <React.Fragment>
-                      {values.subgroup2.length > 0 &&
-                        values.subgroup2.map((subgroupItem, index) => (
-                          <Grid item xs={12} container spacing={2} key={index}>
-                            <Grid item xs={12}>
-                              <Field
-                                fullWidth
-                                component={TextField}
-                                name={`subgroup2.${index}.quantity`}
-                                type="number"
-                                label="Product Quantity"
-                              />
-                            </Grid>
-                            {/* <Grid item xs={12}>
-                              <ErrorMessage
-                                name={`subgroup2.${index}.quantity`}
-                                style={{ color: "red" }}
-                              />
-                            </Grid> */}
-                            <Grid item xs={12}>
-                              <Field
-                                fullWidth
-                                component={TextField}
-                                name={`subgroup2.${index}.price`}
-                                type="number"
-                                label="Product Price"
-                              />
-                            </Grid>
-                            {/* <Grid item xs={12}>
-                              <ErrorMessage
-                                name={`subgroup2.${index}.price`}
-                                style={{ color: "red" }}
-                              />
-                            </Grid> */}
-                            <Grid item xs={12}>
-                              <Button
-                                type="button"
-                                variant="contained"
-                                color="secondary"
-                                onClick={() => remove(index)}
-                              >
-                                X
-                              </Button>
-                            </Grid>
-                          </Grid>
-                        ))}
-                      <Grid item xs={12}>
-                        <Button
-                          type="button"
-                          fullWidth
-                          variant="contained"
-                          color="primary"
-                          onClick={() => push({ name: "", email: "" })}
-                        >
-                          Add Row
-                        </Button>
-                      </Grid>
-                    </React.Fragment>
-                  )}
-                </FieldArray>
-              </Grid>
-              <Grid item xs={12} container spacing={2}>
-                <Grid item xs={6}>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    disabled={isSubmitting}
-                    onClick={() => {
-                      canLeave = true;
-                      dispatch({
-                        type: actionTypes.SET_PAGE,
-                        data: store.page - 1,
-                      });
-                    }}
-                  >
-                    Back
-                  </Button>
+                    );
+                  }}
+                />
+                <Grid item xs={12} container spacing={2}>
+                  <Grid item xs={6}>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      disabled={isSubmitting}
+                      onClick={() => {
+                        canLeave = true;
+                        dispatch({
+                          type: actionTypes.SET_PAGE,
+                          data: store.page - 1,
+                        });
+                      }}
+                    >
+                      Back
+                    </Button>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      color="primary"
+                      type="submit"
+                      disabled={isSubmitting}
+                      onClick={submitForm}
+                    >
+                      Next
+                    </Button>
+                  </Grid>
                 </Grid>
-                <Grid item xs={6}>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    color="primary"
-                    disabled={isSubmitting}
-                    onClick={submitForm}
-                  >
-                    Next
-                  </Button>
-                </Grid>
-              </Grid>
-            </Grid>
-          </Form>
-        )}
-      </Formik>
+              </Form>
+            );
+          }}
+        </Formik>
+      </div>
     </>
   );
 }

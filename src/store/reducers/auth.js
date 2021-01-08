@@ -22,17 +22,17 @@ const initialState = {
     productFeatures: [],
   },
   form3: {
-    subgroup1: [
+    groups: [
       {
         name: "",
         description: "",
         features: [],
-      },
-    ],
-    subgroup2: [
-      {
-        quantity: "",
-        price: "",
+        children: [
+          {
+            quantity: "",
+            price: "",
+          },
+        ],
       },
     ],
   },
